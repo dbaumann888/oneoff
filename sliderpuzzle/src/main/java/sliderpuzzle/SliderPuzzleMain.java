@@ -6,8 +6,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class SliderPuzzleMain {
-    private static final Dimension CANVAS_DIMENSION = new Dimension(1600, 900);
-    private static final Dimension PUZZLE_DIMENSION = new Dimension(4, 4);
+    private static final Dimension CANVAS_DIMENSION = new Dimension(1200, 1200);
+    private static final Dimension PUZZLE_DIMENSION = new Dimension(3, 3);
 
     public static void main(String[] argv) {
         JFrame frame = new JFrame("Slider Puzzle");

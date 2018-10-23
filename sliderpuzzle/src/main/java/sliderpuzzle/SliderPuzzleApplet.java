@@ -2,40 +2,49 @@ package sliderpuzzle;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class SliderPuzzleApplet extends JApplet {
     private final Dimension canvasDimension;
     private final Dimension gameDimension;
     private final SliderPuzzleCanvas canvas;
+    private final TileSet tiles;
 
     public SliderPuzzleApplet(Dimension canvasDim, Dimension gameDim) {
         this.canvasDimension = canvasDim;
         this.gameDimension = gameDim;
-        this.canvas = new SliderPuzzleCanvas(this.canvasDimension);
+        this.tiles = new TileSet(gameDim);
+        this.canvas = new SliderPuzzleCanvas(this.canvasDimension, tiles.getArray());
+    }
+
+    void handleClick(Point p) {
+        Dimension clickLocation = this.canvas.computeTileLocation(p);
+        this.tiles.slide(clickLocation);
+        this.canvas.setTiles(this.tiles.getArray());
+        this.canvas.celebrate(this.tiles.isSolved());
+        this.canvas.repaint();
     }
 
     public void buildUI() {
-        final SliderPuzzleCanvas canvas = this.canvas;
         add("North", this.canvas);
 
-        JButton roseButton = new JButton("rose");
-        roseButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                JButton b = (JButton)e.getSource();
-                canvas.repaint();
-            }
-        });
-        add("Center", roseButton);
+        final SliderPuzzleApplet applet = this;
 
-        JButton treeButton = new JButton("tree");
-        treeButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                JButton b = (JButton)e.getSource();
-                canvas.repaint();
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Point p = e.getPoint();
+                applet.handleClick(p);
             }
+            @Override
+            public void mousePressed(MouseEvent e) { }
+            @Override
+            public void mouseReleased(MouseEvent e) { }
+            @Override
+            public void mouseEntered(MouseEvent e) { }
+            @Override
+            public void mouseExited(MouseEvent e) { }
         });
-        add("South", treeButton);
     }
 }
