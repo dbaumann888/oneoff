@@ -6,16 +6,14 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class SliderPuzzleApplet extends JApplet {
-    private final Dimension canvasDimension;
     private final Dimension gameDimension;
     private final SliderPuzzleCanvas canvas;
     private final TileSet tiles;
 
-    public SliderPuzzleApplet(Dimension canvasDim, Dimension gameDim) {
-        this.canvasDimension = canvasDim;
+    public SliderPuzzleApplet(Dimension gameDim, PuzzleImage image) {
         this.gameDimension = gameDim;
         this.tiles = new TileSet(gameDim);
-        this.canvas = new SliderPuzzleCanvas(this.canvasDimension, tiles.getArray());
+        this.canvas = new SliderPuzzleCanvas(tiles.getArray(), image);
     }
 
     void handleClick(Point p) {

@@ -6,7 +6,7 @@ import java.util.Random;
 public class TileSet {
 
     private static final int BLANK = 0;
-    private static final int RANDOM_SHUFFLES = 500;
+    private static final int RANDOM_SHUFFLES = 50000;
     private final Dimension dimension;
     private final int[][] tiles;
 
