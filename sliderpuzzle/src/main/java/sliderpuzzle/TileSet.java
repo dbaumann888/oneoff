@@ -1,10 +1,12 @@
 package sliderpuzzle;
 
 import java.awt.*;
+import java.util.Random;
 
 public class TileSet {
 
     private static final int BLANK = 0;
+    private static final int RANDOM_SHUFFLES = 500;
     private final Dimension dimension;
     private final int[][] tiles;
 
@@ -29,6 +31,15 @@ public class TileSet {
     }
 
     void slide(Dimension location) {
+        Dimension blank = findBlank();
+        if (location.equals(blank) && isSolved()) {
+            randomize();
+        } else {
+            swapSeriesOfTiles(blank.width, blank.height, location.width, location.height);
+        }
+    }
+
+    Dimension findBlank() {
         int x = 0, y = 0;
         out:
         for (x = 0; x < this.dimension.width; ++x) {
@@ -38,10 +49,10 @@ public class TileSet {
                 }
             }
         }
-        swapConsecutiveTiles(x, y, location.width, location.height);
+        return new Dimension(x, y);
     }
 
-    private void swapConsecutiveTiles(int xBlank, int yBlank, int x2, int y2) {
+    private void swapSeriesOfTiles(int xBlank, int yBlank, int x2, int y2) {
         if (((xBlank != x2) && (yBlank != y2)) || ((xBlank == x2) && (yBlank == y2))) {
             return;
         }
@@ -75,6 +86,15 @@ public class TileSet {
         int temp = this.tiles[x1][y1];
         this.tiles[x1][y1] = this.tiles[x2][y2];
         this.tiles[x2][y2] = temp;
+    }
+
+    public void randomize() {
+        Random random = new Random();
+        for (int i = 0; i < RANDOM_SHUFFLES; ++i) {
+            int randomTile = random.nextInt(this.dimension.width * this.dimension.height);
+            Dimension location = new Dimension(randomTile % this.dimension.width, randomTile / this.dimension.width);
+            slide(location);
+        }
     }
 
     public boolean isSolved() {
