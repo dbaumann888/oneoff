@@ -14,3 +14,5 @@
 # Maven
 log/
 target/
+
+sliderpuzzle/src/main/resources/images/*
