@@ -22,6 +22,11 @@ public class SliderPuzzleCanvas extends Component {
         setPuzzleImage(puzzleImage);
     }
 
+    private int getColumns() { return this.tiles.length; }
+    private int getRows() { return this.tiles[0].length; }
+    private int getTileWidth() { return this.dimension.width / getColumns(); }
+    private int getTileHeight() { return this.dimension.height / getRows(); }
+
     public void setPuzzleImage(PuzzleImage puzzleImage) {
         this.puzzleImage = puzzleImage;
         if (puzzleImage == PuzzleImage.NUMBERS) {
@@ -30,7 +35,9 @@ public class SliderPuzzleCanvas extends Component {
         } else {
             try {
                 this.image = ImageIO.read(SliderPuzzleCanvas.class.getResourceAsStream(this.puzzleImage.getFileName()));
-                this.dimension = new Dimension(this.image.getWidth(), this.image.getHeight());
+                int tileWidth = this.image.getWidth() / getColumns();
+                int tileHeight = this.image.getHeight() / getRows();
+                this.dimension = new Dimension(tileWidth * getColumns(),tileHeight * getRows());
                 this.subImages = buildSubImages(this.image, this.tiles);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -39,22 +46,15 @@ public class SliderPuzzleCanvas extends Component {
     }
 
     private BufferedImage[] buildSubImages(BufferedImage image, int[][] tiles) {
-        int xMax = tiles.length, yMax = tiles[0].length;
+        int xMax = getColumns(), yMax = getRows(), tileWidth = getTileWidth(), tileHeight = getTileHeight();
         BufferedImage[] bufferedImages = new BufferedImage[xMax * yMax];
-        int width = this.image.getWidth(), height = this.image.getHeight();
         int i = 0;
-        int xImage = 0, yImage = 0;
-        int xImage2, yImage2;
-        for (int y = 0; y < tiles[0].length; ++y) {
-            yImage2 = Math.min((int)((double)(height) * (double)(y + 1) / yMax), height);
-            for (int x = 0; x < tiles.length; ++x) {
-                xImage2 = Math.min((int)((double)(width) * (double)(x + 1) / xMax), width);
-                bufferedImages[i] = image.getSubimage(xImage, yImage, xImage2 - xImage, yImage2 - yImage);
-                xImage = xImage2;
+        for (int y = 0; y < yMax; ++y) {
+            for (int x = 0; x < xMax; ++x) {
+                int pX = x * tileWidth, pY = y * tileHeight;
+                bufferedImages[i] = image.getSubimage(pX, pY, tileWidth, tileHeight);
                 i++;
             }
-            yImage = yImage2;
-            xImage = 0;
         }
         return bufferedImages;
     }
@@ -68,19 +68,15 @@ public class SliderPuzzleCanvas extends Component {
     }
 
     public void paint(Graphics g) {
-        for (int x = 0; x < tiles.length; ++x) {
-            for (int y = 0; y < tiles[x].length; ++y) {
+        for (int x = 0; x < getColumns(); ++x) {
+            for (int y = 0; y < getRows(); ++y) {
                 drawTile((Graphics2D)g, x, y);
             }
         }
     }
 
     public Dimension computeTileLocation(Point p) {
-        double tileWidth = ((double)getWidth()) / tiles.length;
-        double tileHeight = ((double)getHeight()) / tiles[0].length;
-        int x = (int)(p.x / tileWidth);
-        int y = (int)(p.y / tileHeight);
-        return new Dimension(x, y);
+        return new Dimension(p.x / getTileWidth(), p.y / getTileHeight());
     }
 
     public void celebrate(boolean solved) {
@@ -123,16 +119,17 @@ public class SliderPuzzleCanvas extends Component {
     }
 
     private void drawImageTile(Graphics2D g, int x, int y) {
-        double tileWidth = ((double)getWidth()) / tiles.length;
-        double tileHeight = ((double)getHeight()) / tiles[x].length;
+        int tileWidth = getTileWidth(), tileHeight = getTileHeight();
         if ((tiles[x][y] == 0) && !this.solved) {
             g.setColor(Color.BLACK);
-            g.fillRect((int)(tileWidth * x), (int)(tileHeight * y), (int)tileWidth, (int)tileHeight);
+            g.fillRect(tileWidth * x, tileHeight * y, tileWidth, tileHeight);
         } else {
             int tileNumber = this.tiles[x][y];
-            if (tileNumber == 0) tileNumber = tiles.length * tiles[0].length;
+            if (tileNumber == 0) {
+                tileNumber = getColumns() * getRows();
+            }
             BufferedImage img = this.subImages[tileNumber - 1];
-            g.drawImage(img, (int)(tileWidth * x), (int)(tileHeight * y), null);
+            g.drawImage(img, tileWidth * x, tileHeight * y, null);
         }
     }
 }
