@@ -2,47 +2,48 @@ package sliderpuzzle;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 public class SliderPuzzleApplet extends JApplet {
-    private final Dimension gameDimension;
-    private final SliderPuzzleCanvas canvas;
-    private final TileSet tiles;
+    private final ConfigPanel configPanel;
+    private SliderPuzzlePanel sliderPuzzlePanel;
 
-    public SliderPuzzleApplet(Dimension gameDim, PuzzleImage image) {
-        this.gameDimension = gameDim;
-        this.tiles = new TileSet(gameDim);
-        this.canvas = new SliderPuzzleCanvas(tiles.getArray(), image);
-    }
-
-    void handleClick(Point p) {
-        Dimension clickLocation = this.canvas.computeTileLocation(p);
-        this.tiles.slide(clickLocation);
-        this.canvas.setTiles(this.tiles.getArray());
-        this.canvas.celebrate(this.tiles.isSolved());
-        this.canvas.repaint();
+    public SliderPuzzleApplet(Dimension defaultGameDim, PuzzleImage image) {
+        this.configPanel = new ConfigPanel(this, defaultGameDim);
     }
 
     public void buildUI() {
-        add("North", this.canvas);
+        buildConfigUI();
+    }
 
-        final SliderPuzzleApplet applet = this;
+    public void buildConfigUI() {
+        add(this.configPanel);
+        this.configPanel.buildUI();
+    }
 
-        addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                Point p = e.getPoint();
-                applet.handleClick(p);
-            }
-            @Override
-            public void mousePressed(MouseEvent e) { }
-            @Override
-            public void mouseReleased(MouseEvent e) { }
-            @Override
-            public void mouseEntered(MouseEvent e) { }
-            @Override
-            public void mouseExited(MouseEvent e) { }
-        });
+    @Override
+    public Dimension getPreferredSize() {
+        if (this.sliderPuzzlePanel != null) {
+            return this.sliderPuzzlePanel.getPreferredSize();
+        } else {
+            return super.getPreferredSize();
+        }
+    }
+
+    @Override
+    public Dimension getSize() {
+        if (this.sliderPuzzlePanel != null) {
+            return this.sliderPuzzlePanel.getSize();
+        } else {
+            return super.getSize();
+        }
+    }
+
+    public void buildPuzzleUI(Dimension gameDim, PuzzleImage image) {
+        remove(this.configPanel);
+        this.sliderPuzzlePanel = new SliderPuzzlePanel(gameDim, image);
+        add(this.sliderPuzzlePanel);
+        sliderPuzzlePanel.buildUI();
+        invalidate();
+        repaint();
     }
 }

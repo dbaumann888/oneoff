@@ -2,10 +2,11 @@ package sliderpuzzle;
 
 public enum PuzzleImage {
     NUMBERS(null),
-    DONUT("krispykreme.jpg"),
-    NYC("nyctilt.png"),
-    TIME_SQUARE("timesquaretilt.jpg"),
-    PARITY("parity.png");
+    ARROWS("arrows.jpeg"),
+    DONUT("donutsprinkles.jpg"),
+    GGBRIDGE("ggbridge.jpg"),
+    STEEL_MILL("steelmill.jpg"),
+    TRAINS("traindepot.jpg");
 
     private String fileName;
 
