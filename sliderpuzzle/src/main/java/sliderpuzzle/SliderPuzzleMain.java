@@ -13,7 +13,7 @@ public class SliderPuzzleMain {
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) { System.exit(0); }
         });
-        SliderPuzzleApplet applet = new SliderPuzzleApplet(PUZZLE_DIMENSION, PuzzleImage.DONUT);
+        SliderPuzzleApplet applet = new SliderPuzzleApplet(PUZZLE_DIMENSION, PuzzleImage.GGBRIDGE);
         applet.buildUI();
         frame.add("Center", applet);
         frame.pack();

@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class SliderPuzzleCanvas extends Component {
 
-    private static final Dimension NUMBERS_DIMENSION = new Dimension(1200, 1200);
+    private static final Dimension NUMBERS_DIMENSION = new Dimension(900, 900);
 
     private Dimension dimension;
     private int[][] tiles;
@@ -59,7 +59,13 @@ public class SliderPuzzleCanvas extends Component {
         return bufferedImages;
     }
 
+    @Override
     public Dimension getPreferredSize() {
+        return this.dimension;
+    }
+
+    @Override
+    public Dimension getSize() {
         return this.dimension;
     }
 
