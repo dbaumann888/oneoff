@@ -6,19 +6,29 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class SliderPuzzlePanel extends JPanel {
+    private final SliderPuzzleApplet applet;
     private final SliderPuzzleCanvas canvas;
     private final TileSet tiles;
 
-    public SliderPuzzlePanel(Dimension gameDim, PuzzleImage image) {
+    public SliderPuzzlePanel(SliderPuzzleApplet applet, Dimension gameDim, PuzzleImage image) {
+        this.applet = applet;
         this.tiles = new TileSet(gameDim);
+        this.tiles.randomize();
         this.canvas = new SliderPuzzleCanvas(tiles.getArray(), image);
     }
 
     void handleMouseClick(Point p) {
         Dimension clickLocation = this.canvas.computeTileLocation(p);
-        this.tiles.slide(clickLocation);
-        this.canvas.setTiles(this.tiles.getArray());
-        this.canvas.celebrate(this.tiles.isSolved());
+        if (this.tiles.isSolved()) {
+            this.applet.buildConfigUI();
+        } else {
+            this.tiles.slide(clickLocation, false);
+            this.canvas.setTiles(this.tiles.getArray());
+            boolean solvedAfter = this.tiles.isSolved();
+            if (solvedAfter) {
+                this.canvas.celebrate(solvedAfter);
+            }
+        }
         this.canvas.repaint();
     }
 

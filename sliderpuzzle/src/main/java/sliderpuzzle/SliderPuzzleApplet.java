@@ -4,20 +4,27 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SliderPuzzleApplet extends JApplet {
-    private final ConfigPanel configPanel;
+    private static final Dimension DEFAULT_PUZZLE_DIMENSION = new Dimension(6, 5);
+    private ConfigPanel configPanel;
     private SliderPuzzlePanel sliderPuzzlePanel;
 
-    public SliderPuzzleApplet(Dimension defaultGameDim, PuzzleImage image) {
-        this.configPanel = new ConfigPanel(this, defaultGameDim);
-    }
+    public SliderPuzzleApplet() {}
 
     public void buildUI() {
         buildConfigUI();
     }
 
     public void buildConfigUI() {
+        if (this.sliderPuzzlePanel != null) {
+            remove(this.sliderPuzzlePanel);
+        }
+        if (this.configPanel == null) {
+            this.configPanel = new ConfigPanel(this, DEFAULT_PUZZLE_DIMENSION);
+            this.configPanel.buildUI();
+        }
         add(this.configPanel);
-        this.configPanel.buildUI();
+        invalidate();
+        repaint();
     }
 
     @Override
@@ -40,7 +47,7 @@ public class SliderPuzzleApplet extends JApplet {
 
     public void buildPuzzleUI(Dimension gameDim, PuzzleImage image) {
         remove(this.configPanel);
-        this.sliderPuzzlePanel = new SliderPuzzlePanel(gameDim, image);
+        this.sliderPuzzlePanel = new SliderPuzzlePanel(this, gameDim, image);
         add(this.sliderPuzzlePanel);
         sliderPuzzlePanel.buildUI();
         invalidate();

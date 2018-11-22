@@ -30,9 +30,9 @@ public class TileSet {
         return this.tiles;
     }
 
-    void slide(Dimension location) {
+    void slide(Dimension location, boolean inRandomMode) {
         Dimension blank = findBlank();
-        if (location.equals(blank) && isSolved()) {
+        if (location.equals(blank) && isSolved() && !inRandomMode) {
             randomize();
         } else {
             swapSeriesOfTiles(blank.width, blank.height, location.width, location.height);
@@ -93,7 +93,7 @@ public class TileSet {
         for (int i = 0; i < RANDOM_SHUFFLES; ++i) {
             int randomTile = random.nextInt(this.dimension.width * this.dimension.height);
             Dimension location = new Dimension(randomTile % this.dimension.width, randomTile / this.dimension.width);
-            slide(location);
+            slide(location, true);
         }
     }
 

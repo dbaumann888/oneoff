@@ -1,18 +1,19 @@
 package sliderpuzzle;
 
-public enum PuzzleImage {
-    NUMBERS(null),
-    ARROWS("arrows.jpeg"),
-    DONUT("donutsprinkles.jpg"),
-    GGBRIDGE("ggbridge.jpg"),
-    STEEL_MILL("steelmill.jpg"),
-    TRAINS("traindepot.jpg");
+import java.awt.*;
 
-    private String fileName;
+public class PuzzleImage {
+    private String name;
+    private String filePath;
+    private Dimension defaultDimension;
 
-    PuzzleImage(String fileNameWithoutPath) {
-        this.fileName = "/images/" + fileNameWithoutPath;
+    PuzzleImage(String name, String filePath, Dimension defaultDimension) {
+        this.name = name;
+        this.filePath = filePath;
+        this.defaultDimension = defaultDimension;
     }
 
-    public String getFileName() { return this.fileName; }
+    public String getName() { return this.name; }
+    public String getFilePath() { return this.filePath; }
+    public Dimension getDefaultDimension() { return this.defaultDimension; }
 }

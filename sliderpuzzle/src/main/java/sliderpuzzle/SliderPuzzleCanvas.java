@@ -4,6 +4,9 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 
 public class SliderPuzzleCanvas extends Component {
 
@@ -29,20 +32,29 @@ public class SliderPuzzleCanvas extends Component {
 
     public void setPuzzleImage(PuzzleImage puzzleImage) {
         this.puzzleImage = puzzleImage;
-        if (puzzleImage == PuzzleImage.NUMBERS) {
+/*        if (puzzleImage == PuzzleImage.NUMBERS) {
             this.image = null;
             this.dimension = NUMBERS_DIMENSION;
-        } else {
-            try {
-                this.image = ImageIO.read(SliderPuzzleCanvas.class.getResourceAsStream(this.puzzleImage.getFileName()));
-                int tileWidth = this.image.getWidth() / getColumns();
-                int tileHeight = this.image.getHeight() / getRows();
-                this.dimension = new Dimension(tileWidth * getColumns(),tileHeight * getRows());
-                this.subImages = buildSubImages(this.image, this.tiles);
-            } catch (IOException e) {
-                e.printStackTrace();
+        } else { */
+        InputStream is;
+        try {
+            String filePath = this.puzzleImage.getFilePath();
+
+            if (filePath.startsWith("/images/")) {
+                is = SliderPuzzleCanvas.class.getResourceAsStream(filePath);
+            } else {
+                URL urlObject = new URL(filePath);
+                URLConnection urlConnection = urlObject.openConnection();
+                is = urlConnection.getInputStream();
             }
+            this.image = ImageIO.read(is);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        int tileWidth = this.image.getWidth() / getColumns();
+        int tileHeight = this.image.getHeight() / getRows();
+        this.dimension = new Dimension(tileWidth * getColumns(),tileHeight * getRows());
+        this.subImages = buildSubImages(this.image, this.tiles);
     }
 
     private BufferedImage[] buildSubImages(BufferedImage image, int[][] tiles) {
@@ -91,11 +103,11 @@ public class SliderPuzzleCanvas extends Component {
 
 
     private void drawTile(Graphics2D g, int x, int y) {
-        if (this.puzzleImage == PuzzleImage.NUMBERS) {
+/*        if (this.puzzleImage == PuzzleImage.NUMBERS) {
             drawNumberTile(g, x, y);
-        } else {
+        } else {*/
             drawImageTile(g, x, y);
-        }
+//        }
     }
 
     private void drawNumberTile(Graphics2D g, int x, int y) {

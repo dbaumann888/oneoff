@@ -4,49 +4,48 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.util.List;
 
 public class ConfigPanel extends JPanel {
     private final SliderPuzzleApplet applet;
-    private final SliderPuzzleCanvas canvas;
     private final Dimension defaultDimension;
+    private java.awt.List imageList;
+    private final SliderPuzzleConfiguration configuration;
 
     public ConfigPanel(SliderPuzzleApplet applet, Dimension defaultDimension) {
         this.applet = applet;
         this.defaultDimension = defaultDimension;
-        this.canvas = null;
+        this.configuration = new SliderPuzzleConfiguration();
     }
 
-    void handleMouseClick(Point p) {
-        applet.buildPuzzleUI(this.defaultDimension, PuzzleImage.GGBRIDGE);
+    void start() {
+        int index = this.imageList.getSelectedIndex();
+        if (index < 0) {
+            index = 0;
+        }
+        PuzzleImage image = this.configuration.getImages().get(index);
+        applet.buildPuzzleUI(image.getDefaultDimension(), image);
     }
 
     public void buildUI() {
-        JButton startButton = new JButton("start numbers");
+        this.imageList = buildImageList();
+        add(this.imageList);
+
+        JButton startButton = new JButton("start");
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JButton b = (JButton)e.getSource();
-                handleMouseClick(b.getMousePosition());
+                start();
             }
         });
         add(startButton);
+    }
 
-/*        addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) { }
-            @Override
-            public void mousePressed(MouseEvent e) { }
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                Point p = e.getPoint();
-                panel.handleMouseClick(p);
-            }
-            @Override
-            public void mouseEntered(MouseEvent e) { }
-            @Override
-            public void mouseExited(MouseEvent e) { }
-        });
-        */
+    private java.awt.List buildImageList() {
+        List<PuzzleImage> images = this.configuration.getImages();
+        java.awt.List imageList = new java.awt.List(20, false);
+        for (PuzzleImage image : images) {
+            imageList.add(image.getName());
+        }
+        return imageList;
     }
 }
